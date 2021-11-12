@@ -26,17 +26,6 @@ async def forward_job():
     ''' the function that does the job 😂 '''
 
     async with TelegramClient('forwarder', API_ID, API_HASH) as client:
-
-        confirm = ''' IMPORTANT 🛑
-            Are you sure that your `config.ini` is correct ?
-
-            You can run the `get_chat_info.py` script to confirm the `from` and `to`.
-
-            Press [ENTER] to continue:
-            '''
-
-        input(confirm)
-
         error_occured = False
         for forward in forwards:
             from_chat, to_chat, offset = get_forward(forward)
@@ -50,7 +39,7 @@ async def forward_job():
                 if isinstance(message, MessageService):
                     continue
                 try:
-                    await client.send_message(_(to_chat), message)
+                    await client.forward_messages(_(to_chat), message)
                     last_id = str(message.id)
                     logging.info('forwarding message with id = %s', last_id)
                     update_offset(forward, last_id)
