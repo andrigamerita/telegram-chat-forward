@@ -1,8 +1,6 @@
-''' A script to send all messages from one chat to another. '''
-
 import asyncio
 import logging
-
+from time import sleep
 from telethon.tl.patched import MessageService
 from telethon.errors.rpcerrorlist import FloodWaitError
 from telethon import TelegramClient
@@ -23,8 +21,6 @@ def _(string):
 
 
 async def forward_job():
-    ''' the function that does the job 😂 '''
-
     async with TelegramClient('forwarder', API_ID, API_HASH) as client:
         error_occured = False
         for forward in forwards:
@@ -44,9 +40,8 @@ async def forward_job():
                     logging.info('forwarding message with id = %s', last_id)
                     update_offset(forward, last_id)
                 except FloodWaitError as fwe:
-                    print(f'\n{fwe}\n\nRun the script again after some time. \
-                        FloodWaitError Occured')
-                    quit()
+                    print(f'\n{fwe}\n\nFloodWaitError Occured, retrying in 20 seconds.')
+                    sleep(20)
                 except Exception as err:
                     logging.exception(err)
                     error_occured = True
